@@ -13,9 +13,9 @@ int main(int argc, char* argv[]) {
   std::string mode = pub_sub_type_value.get<std::string>();
 
   rclcpp::NodeOptions options;
-  if (mode == "pub") {
+  if (mode == "publisher") {
     rclcpp::spin(std::make_shared<PublisherNode>(options));
-  } else if (mode == "sub") {
+  } else if (mode == "subscriber") {
     rclcpp::spin(std::make_shared<SubscriberNode>(options));
   } else {
     std::cerr << "Invalid mode: " << mode << std::endl;
