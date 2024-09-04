@@ -6,10 +6,7 @@
 
 #include "publish_test/subscriber_node.hpp"
 
-class SubscriberNode : public rclcpp::Node
-{
-public:
-  Subscriber(const rclcpp::NodeOptions& options)
+SubscriberNode::SubscriberNode(const rclcpp::NodeOptions& options)
 : Node(
     "subscription_node", rclcpp::NodeOptions()
     .allow_undeclared_parameters(true)
@@ -42,10 +39,3 @@ public:
         );
     }
 }
-
-private:
-    std::vector<rclcpp::Subscription<std_msgs::msg::String>::SharedPtr> base_subscriptions_;
-    std::vector<rclcpp::Subscription<std_msgs::msg::String>::SharedPtr> var_subscriptions_;
-    int base_msg_count_;
-    int var_msg_count_;
-};

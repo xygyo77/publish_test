@@ -6,10 +6,7 @@
 
 #include "publish_test/publisher_node.hpp"
 
-class PublisherNode : public rclcpp::Node
-{
-public:
-  PublisherNode(const rclcpp::NodeOptions& options)
+PublisherNode::PublisherNode(const rclcpp::NodeOptions& options)
 : Node(
     "publisher_node", rclcpp::NodeOptions()
     .allow_undeclared_parameters(true)
@@ -54,10 +51,3 @@ public:
         }
     );
 }
-
-private:
-    std::vector<rclcpp::Publisher<std_msgs::msg::String>::SharedPtr> base_publishers_;
-    std::vector<rclcpp::Publisher<std_msgs::msg::String>::SharedPtr> var_publishers_;
-    int base_msg_count_;
-    int var_msg_count_;
-};
