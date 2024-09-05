@@ -12,8 +12,15 @@ public:
 private:
     std::vector<rclcpp::Publisher<std_msgs::msg::String>::SharedPtr> base_publishers_;
     std::vector<rclcpp::Publisher<std_msgs::msg::String>::SharedPtr> var_publishers_;
-    int base_msg_count_;
-    int var_msg_count_;
+    int base_topic_count_;
+    double base_frequency_;
+    int base_msg_size_;
+    int base_qos_;
+    int var_topic_count_;
+    double var_frequency_;
+    int var_msg_size_;
+    int var_qos_;
+    bool output_suppressed_;
 };
 
 #endif  // PUBLISHER_NODE_HPP_#ifndef PUBLISHER_NODE_HPP_

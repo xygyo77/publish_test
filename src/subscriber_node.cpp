@@ -14,8 +14,13 @@ SubscriberNode::SubscriberNode(const rclcpp::NodeOptions& options)
     "subscription_node", rclcpp::NodeOptions()
     .allow_undeclared_parameters(true)
     .automatically_declare_parameters_from_overrides(true)),
-    base_msg_count_(0),
-    var_msg_count_(0)
+    base_topic_count_(0),
+    base_frequency_(0.0),
+    base_msg_size_(0),
+    base_qos_(0),
+    var_topic_count_(0),
+    var_qos_(0),
+    output_suppressed_(false)
 {
     // komanndline options
     DB(0)
@@ -25,21 +30,23 @@ SubscriberNode::SubscriberNode(const rclcpp::NodeOptions& options)
     //this->declare_parameter("output_suppressed", false);
     DB(2)
 
-    std::size_t base_topic_count = this->get_parameter("topic_count").as_int();
-    //std::size_t var_topic_count = this->get_parameter("var_topic_count").as_int();
-    auto output_suppressed = this->get_parameter("output_suppressed").as_bool();
+    this->base_topic_count_ = this->get_parameter("topic_count").as_int();
+    this->base_qos_ = this->get_parameter("qos").as_int();
+    //this->var_topic_count = this->get_parameter("var_topic_count").as_int();
+    //this->var_qos_ = this->get_parameter("var_qos_").as_int();
+    this->output_suppressed_ = this->get_parameter("output_suppressed").as_bool();
     DB(3)
 
     // create base subscribers
-    for (auto idx = 0; idx < base_topic_count; ++idx) {
+    for (auto idx = 0; idx < this->base_topic_count_; ++idx) {
         auto topic_name = "base_topic_" + std::to_string(idx);
-        base_subscriptions_.push_back(
+        this->base_subscriptions_.push_back(
             this->create_subscription<std_msgs::msg::String>(
                 topic_name, 10,
-                [this, idx, output_suppressed](const std_msgs::msg::String::SharedPtr msg) -> void 
+                [this, idx](const std_msgs::msg::String::SharedPtr msg) -> void 
                 {
-                    if (!output_suppressed) {
-                        RCLCPP_INFO(this->get_logger(), "SUB: %s (%u : %u)", msg->data.c_str(), idx, base_msg_count_++);
+                    if (!this->output_suppressed_) {
+                        RCLCPP_INFO(this->get_logger(), "SUB: %s (%u : %u)", msg->data.c_str(), idx, this->base_topic_count_++);
                     }
                 }
             )
