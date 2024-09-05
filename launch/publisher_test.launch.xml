@@ -1,0 +1,25 @@
+<launch>
+    <arg name="config_file" default="$(find-pkg-share publish_test)/config/publish_test.param.yaml"/>
+    <arg name="topic_count" default="5"/>
+    <arg name="frequency" default="10.0"/>
+    <arg name="msg_size" default="100"/>
+    <arg name="qos" default="10"/>
+    <arg name="output_suppressed" default="false"/>
+
+    <node pkg="publish_test" exec="publisher_node" name="publisher_node" output="screen">
+        <remap from="~/output/publisher_node" to="/publisher_node"/>
+        <param from="$(var config_file)"/>
+        <param name="topic_count" value="$(var topic_count)"/>
+        <param name="frequency" value="$(var frequency)"/>
+        <param name="msg_size" value="$(var msg_size)"/>
+        <param name="qos" value="$(var qos)"/>
+        <param name="output_suppressed" value="$(var output_suppressed)"/>
+    </node>
+
+    <node pkg="publish_test" exec="subscriber_node" name="subscriber_node" output="screen">
+        <remap from="~/output/publisher_node" to="/publisher_node"/>
+        <param from="$(var config_file)"/>
+        <param name="topic_count" value="$(var topic_count)"/>
+        <param name="qos" value="$(var qos)"/>
+    </node>
+</launch>

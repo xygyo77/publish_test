@@ -6,6 +6,9 @@
 
 #include "publish_test/publisher_node.hpp"
 
+extern bool DEBUG;
+#define DB(X) {if(DEBUG) {std::cout << __func__ << ": " << __LINE__ << " " << X << std::endl;}}
+
 PublisherNode::PublisherNode(const rclcpp::NodeOptions& options)
 : Node(
     "publisher_node", rclcpp::NodeOptions()
@@ -14,19 +17,16 @@ PublisherNode::PublisherNode(const rclcpp::NodeOptions& options)
     base_msg_count_(0),
     var_msg_count_(0)
 {
+    DB("START PUB")
     // command line options
-    this->declare_parameter("base_topic_count", 10);
-    this->declare_parameter("base_frequency", 10.0);
-    this->declare_parameter("var_topic_count", 10);
-    this->declare_parameter("var_frequency", 10.0);
-    this->declare_parameter("var_msg_size", 100);
-    this->declare_parameter("output_suppressed", false);
-
-    auto base_topic_count = this->get_parameter("base_topic_count").as_int();
-    auto base_frequency = this->get_parameter("base_frequency").as_int();
-    auto var_topic_count = this->get_parameter("var_topic_count").as_int();
-    auto var_frequency = this->get_parameter("var_frequency").as_int();
+    auto base_topic_count = this->get_parameter("topic_count").as_int();
+    auto base_frequency = this->get_parameter("frequency").as_double();
+    //auto base_msg_size = this->get_parameter("msg_size").as_int();
+    //auto var_topic_count = this->get_parameter("var_topic_count").as_int();
+    //auto var_frequency = this->get_parameter("var_frequency").as_int();
     auto output_suppressed = this->get_parameter("output_suppressed").as_bool();
+
+    RCLCPP_INFO(this->get_logger(), "base_topic_count=%d base_frequency=%f", base_topic_count, base_frequency);
 
     // create base publishers
     for ( auto idx = 0; idx < base_topic_count; ++idx ) {
@@ -36,9 +36,11 @@ PublisherNode::PublisherNode(const rclcpp::NodeOptions& options)
     }
 
     double interval_us = 1000.0 / base_frequency * 1000;
+    RCLCPP_INFO(this->get_logger(), "interval_us=%f", interval_us);
     this->create_wall_timer(
         std::chrono::microseconds(static_cast<int>(interval_us)),
         [this, output_suppressed]() {
+            DB("TIMER")
             auto idx = 0;
             for ( const auto& publisher: base_publishers_ ) {
                 auto message = std_msgs::msg::String();

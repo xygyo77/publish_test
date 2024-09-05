@@ -1,0 +1,7 @@
+/**:
+  ros__parameters:
+    topic_count: 5
+    frequency: 10.0
+    msg_size: 100
+    qos: 100
+    output_suppressed: false
