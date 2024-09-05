@@ -7,7 +7,8 @@
 class PublisherNode : public rclcpp::Node
 {
 public:
-    explicit PublisherNode(const rclcpp::NodeOptions& options);
+    //explicit PublisherNode(const std::string& node_name, const rclcpp::NodeOptions& options);
+    explicit PublisherNode(const std::string& node_name);
 
 private:
     std::vector<rclcpp::Publisher<std_msgs::msg::String>::SharedPtr> base_publishers_;

@@ -7,10 +7,6 @@
 bool DEBUG = true;
 
 int main(int argc, char* argv[]) {
-  int topic_count = 0;
-  int frequency = 10;
-  int msg_size = 100;
-  int qos = 10;
   RCLCPP_INFO(rclcpp::get_logger("log"), "argc: %d", argc);
   bool is_pub = false;
   for (int i = 0; i < argc; ++i) {
@@ -22,12 +18,20 @@ int main(int argc, char* argv[]) {
   }
 
   rclcpp::init(argc, argv);
-
   rclcpp::NodeOptions options;
+  auto executor = std::make_shared<rclcpp::executors::MultiThreadedExecutor>();
   if (is_pub) {
-    rclcpp::spin(std::make_shared<PublisherNode>(options));
+    //executor->add_node(std::make_shared<PublisherNode>("publisher_base_node", options));
+    executor->add_node(std::make_shared<PublisherNode>("publisher_base_node"));
+    //executor->add_node(std::make_shared<PublisherNode>("publisher_var_node", options));
+    executor->add_node(std::make_shared<PublisherNode>("publisher_var_node"));
+    executor->spin();
   } else {
-    rclcpp::spin(std::make_shared<SubscriberNode>(options));
+    //executor->add_node(std::make_shared<SubscriberNode>("subscriber_base_node", options));
+    executor->add_node(std::make_shared<SubscriberNode>("subscriber_base_node"));
+    //executor->add_node(std::make_shared<SubscriberNode>("subscriber_var_node", options));
+    executor->add_node(std::make_shared<SubscriberNode>("subscriber_var_node"));
+    executor->spin();
   }
 
   rclcpp::shutdown();

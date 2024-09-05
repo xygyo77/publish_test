@@ -7,7 +7,8 @@
 class SubscriberNode : public rclcpp::Node
 {
 public:
-    explicit SubscriberNode(const rclcpp::NodeOptions& options);
+    //explicit SubscriberNode(const std::string& node_name, const rclcpp::NodeOptions& options);
+    explicit SubscriberNode(const std::string& node_name);
 
 private:
     std::vector<rclcpp::Subscription<std_msgs::msg::String>::SharedPtr> base_subscriptions_;

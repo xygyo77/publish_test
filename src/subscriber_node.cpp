@@ -9,9 +9,10 @@
 extern bool DEBUG;
 #define DB(X) {if(DEBUG) {std::cout << __func__ << ": " << __LINE__ << " " << X << std::endl;}}
 
-SubscriberNode::SubscriberNode(const rclcpp::NodeOptions& options)
+//SubscriberNode::SubscriberNode(const std::string& node_name, const rclcpp::NodeOptions& options)
+SubscriberNode::SubscriberNode(const std::string& node_name)
 : Node(
-    "subscription_node", rclcpp::NodeOptions()
+    node_name, rclcpp::NodeOptions()
     .allow_undeclared_parameters(true)
     .automatically_declare_parameters_from_overrides(true)),
     base_topic_count_(0),
@@ -23,7 +24,7 @@ SubscriberNode::SubscriberNode(const rclcpp::NodeOptions& options)
     output_suppressed_(false)
 {
     // komanndline options
-    DB(0)
+    DB(node_name)
     //this->declare_parameter("topic_count", 5);
     DB(1)
     //this->declare_parameter("var_topic_count", 5);
