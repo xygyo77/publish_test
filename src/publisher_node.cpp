@@ -43,20 +43,9 @@ PublisherNode::PublisherNode(const std::string& node_name)
         this->base_publishers_.push_back(publisher);
     }
 
-  rclcpp::WallRate rate(1);
-  std_msgs::msg::String greeting;
-  greeting.data = "hello world";
-  while (rclcpp::ok()) {
-    RCLCPP_INFO(this->get_logger(), "Publishing greeting '%s'", greeting.data.c_str());
-    this->base_publishers_[0]->publish(greeting);
-    //rclcpp::spin_some(this);
-    rate.sleep();
-    break;
-  }
-
     double interval_us = 1000.0 / this->base_frequency_ * 1000;
     RCLCPP_INFO(this->get_logger(), "interval_us=%f", interval_us);
-    auto timer = this->create_wall_timer(
+    this->timer_ = this->create_wall_timer(
         std::chrono::microseconds(static_cast<int>(interval_us)),
         [this]() {
             DB("TIMER")

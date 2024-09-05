@@ -13,6 +13,7 @@ public:
 private:
     std::vector<rclcpp::Subscription<std_msgs::msg::String>::SharedPtr> base_subscriptions_;
     std::vector<rclcpp::Subscription<std_msgs::msg::String>::SharedPtr> var_subscriptions_;
+
     int base_topic_count_;
     double base_frequency_;
     int base_msg_size_;

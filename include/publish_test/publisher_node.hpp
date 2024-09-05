@@ -13,6 +13,8 @@ public:
 private:
     std::vector<rclcpp::Publisher<std_msgs::msg::String>::SharedPtr> base_publishers_;
     std::vector<rclcpp::Publisher<std_msgs::msg::String>::SharedPtr> var_publishers_;
+    rclcpp::TimerBase::SharedPtr timer_;
+
     int base_topic_count_;
     double base_frequency_;
     int base_msg_size_;
