@@ -21,16 +21,16 @@ int main(int argc, char* argv[]) {
   rclcpp::NodeOptions options;
   auto executor = std::make_shared<rclcpp::executors::MultiThreadedExecutor>();
   if (is_pub) {
-    //executor->add_node(std::make_shared<PublisherNode>("publisher_base_node", options));
-    executor->add_node(std::make_shared<PublisherNode>("publisher_base_node"));
-    //executor->add_node(std::make_shared<PublisherNode>("publisher_var_node", options));
-    executor->add_node(std::make_shared<PublisherNode>("publisher_var_node"));
+    auto publisher_base_node = std::make_shared<PublisherNode>("publisher_node", "base");
+    auto publisher_var_node = std::make_shared<PublisherNode>("publisher_node", "var");
+    executor->add_node(publisher_base_node);
+    executor->add_node(publisher_var_node);
     executor->spin();
   } else {
-    //executor->add_node(std::make_shared<SubscriberNode>("subscriber_base_node", options));
-    executor->add_node(std::make_shared<SubscriberNode>("subscriber_base_node"));
-    //executor->add_node(std::make_shared<SubscriberNode>("subscriber_var_node", options));
-    executor->add_node(std::make_shared<SubscriberNode>("subscriber_var_node"));
+    auto subscriber_base_node = std::make_shared<SubscriberNode>("subscriber_node", "base");
+    auto subscriber_var_node = std::make_shared<SubscriberNode>("subscriber_node", "var");
+    executor->add_node(subscriber_base_node);
+    executor->add_node(subscriber_var_node);
     executor->spin();
   }
 

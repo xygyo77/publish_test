@@ -7,22 +7,18 @@
 class PublisherNode : public rclcpp::Node
 {
 public:
-    //explicit PublisherNode(const std::string& node_name, const rclcpp::NodeOptions& options);
-    explicit PublisherNode(const std::string& node_name);
+    explicit PublisherNode(const std::string& node_name, const std::string& ns);
 
 private:
     std::vector<rclcpp::Publisher<std_msgs::msg::String>::SharedPtr> base_publishers_;
     std::vector<rclcpp::Publisher<std_msgs::msg::String>::SharedPtr> var_publishers_;
     rclcpp::TimerBase::SharedPtr timer_;
 
-    int base_topic_count_;
-    double base_frequency_;
-    int base_msg_size_;
-    int base_qos_;
-    int var_topic_count_;
-    double var_frequency_;
-    int var_msg_size_;
-    int var_qos_;
+    int topic_count_;
+    double frequency_;
+    int msg_size_;
+    int qos_depth_;
+    std::string prefix_;
     bool output_suppressed_;
 };
 
