@@ -1,10 +1,12 @@
 <launch>
     <arg name="config_file" default="$(find-pkg-share publish_test)/config/publish_test.param.yaml"/>
     <arg name="topic_count" default="200"/>
+    <arg name="unit" default="10"/>
     <arg name="frequency" default="10.0"/>
     <arg name="msg_size" default="128"/>
     <arg name="qos_depth" default="10"/>
     <arg name="var_topic_count" default="100"/>
+    <arg name="var_unit" default="10"/>
     <arg name="var_frequency" default="10.0"/>
     <arg name="var_msg_size" default="128"/>
     <arg name="var_qos_depth" default="10"/>
@@ -14,10 +16,12 @@
         <remap from="~/output/publisher_node" to="/publisher_node"/>
         <param from="$(var config_file)"/>
         <param name="topic_count" value="$(var topic_count)"/>
+        <param name="unit" value="$(var unit)"/>
         <param name="frequency" value="$(var frequency)"/>
         <param name="msg_size" value="$(var msg_size)"/>
         <param name="qos_depth" value="$(var qos_depth)"/>
         <param name="var_topic_count" value="$(var var_topic_count)"/>
+        <param name="var_unit" value="$(var var_unit)"/>
         <param name="var_frequency" value="$(var var_frequency)"/>
         <param name="var_msg_size" value="$(var var_msg_size)"/>
         <param name="var_qos_depth" value="$(var var_qos_depth)"/>

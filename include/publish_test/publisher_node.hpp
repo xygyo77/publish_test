@@ -13,11 +13,11 @@ public:
     int get_msg_counter() {return msg_counter_;}
 
 private:
-    std::vector<rclcpp::Publisher<std_msgs::msg::String>::SharedPtr> base_publishers_;
-    std::vector<rclcpp::Publisher<std_msgs::msg::String>::SharedPtr> var_publishers_;
-    rclcpp::TimerBase::SharedPtr timer_;
+    std::vector<rclcpp::Publisher<std_msgs::msg::String>::SharedPtr> publishers_;
+    std::vector<rclcpp::TimerBase::SharedPtr> timers_;
 
     int topic_count_;
+    int unit_;
     double frequency_;
     int msg_size_;
     int qos_depth_;

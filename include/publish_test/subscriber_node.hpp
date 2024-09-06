@@ -16,8 +16,7 @@ public:
     int get_rx_error() {return rx_error_;}
 
 private:
-    std::vector<rclcpp::Subscription<std_msgs::msg::String>::SharedPtr> base_subscriptions_;
-    std::vector<rclcpp::Subscription<std_msgs::msg::String>::SharedPtr> var_subscriptions_;
+    std::vector<rclcpp::Subscription<std_msgs::msg::String>::SharedPtr> subscriptions_;
 
     int topic_count_;
     int qos_depth_;

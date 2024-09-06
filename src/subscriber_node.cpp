@@ -66,12 +66,12 @@ SubscriberNode::SubscriberNode(const std::string& node_name, const std::string& 
     signal(SIGINT, signal_sub_handler);
 
     // create base subscribers
-    for (auto idx = 0; idx < this->topic_count_; ++idx) {
-        auto topic_name = this->prefix_ + "_topic_" + std::to_string(idx);
-        this->base_subscriptions_.push_back(
+    for (auto topic_index = 0; topic_index < this->topic_count_; ++topic_index) {
+        auto topic_name = this->prefix_ + "_topic_" + std::to_string(topic_index);
+        this->subscriptions_.push_back(
             this->create_subscription<std_msgs::msg::String>(
                 topic_name, this->qos_depth_,
-                [this, idx](const std_msgs::msg::String::SharedPtr msg) -> void 
+                [this, topic_index](const std_msgs::msg::String::SharedPtr msg) -> void 
                 {
                     std::string rx_serial_num_str =msg->data.substr(0, 8);
                     int rx_serial_num = std::stoi(rx_serial_num_str);
@@ -85,7 +85,7 @@ SubscriberNode::SubscriberNode(const std::string& node_name, const std::string& 
                         this->msg_counter_ = rx_serial_num;
                     }
                     if (!this->output_suppressed_) {
-                        RCLCPP_INFO(this->get_logger(), "SUB: %s |%s| (%u : %u)", this->prefix_.c_str(), msg->data.c_str(), idx, this->msg_counter_);
+                        RCLCPP_INFO(this->get_logger(), "SUB: %s |%s| (%u : %u)", this->prefix_.c_str(), msg->data.c_str(), topic_index, this->msg_counter_);
                     }
                     this->msg_counter_++;
                 }
