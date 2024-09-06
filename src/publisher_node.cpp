@@ -61,6 +61,7 @@ PublisherNode::PublisherNode(const std::string& node_name, const std::string& ns
         this->prefix_ = "var";
     }
     this->output_suppressed_ = this->get_parameter("output_suppressed").as_bool();
+    DEBUG = !this->output_suppressed_;
 
     RCLCPP_INFO(this->get_logger(), "\n=== PUB: %s ===\n topic_count=%d unit=%d freq=%f size=%d qos=%d suppress=%d", this->prefix_.c_str(), this->topic_count_, this->unit_, this->frequency_, this->msg_size_, this->qos_depth_, this->output_suppressed_);
 

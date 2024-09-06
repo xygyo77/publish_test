@@ -60,6 +60,7 @@ SubscriberNode::SubscriberNode(const std::string& node_name, const std::string& 
         this->prefix_ = "var";
     }
     this->output_suppressed_ = this->get_parameter("output_suppressed").as_bool();
+    DEBUG = !this->output_suppressed_;
 
     RCLCPP_INFO(this->get_logger(), "\n=== SUB: %s ===\n topic_count=%d qos=%d suppress=%d", this->prefix_.c_str(), this->topic_count_, this->qos_depth_, this->output_suppressed_);
 
