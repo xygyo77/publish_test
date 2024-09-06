@@ -18,6 +18,8 @@ PublisherNode::PublisherNode(const std::string& node_name, const std::string& ns
     frequency_(0.0),
     msg_size_(0),
     qos_depth_(0),
+    msg_counter_(0),
+    prefix_("base"),
     output_suppressed_(false)
 {
     DB("==================================================================================")
@@ -29,7 +31,6 @@ PublisherNode::PublisherNode(const std::string& node_name, const std::string& ns
         this->frequency_ = this->get_parameter("frequency").as_double();
         this->msg_size_ = this->get_parameter("msg_size").as_int();
         this->qos_depth_ = this->get_parameter("qos_depth").as_int();
-        this->prefix_ = "base";
     } else {
         // variable node parameters
         this->topic_count_ = this->get_parameter("var_topic_count").as_int();
@@ -40,7 +41,7 @@ PublisherNode::PublisherNode(const std::string& node_name, const std::string& ns
     }
     this->output_suppressed_ = this->get_parameter("output_suppressed").as_bool();
 
-    RCLCPP_INFO(this->get_logger(), "topic_count=%d frequency=%f", this->topic_count_, this->frequency_);
+    RCLCPP_INFO(this->get_logger(), "\n=== PUB: %s ===\n topic_count=%d freq=%f size=%d qos=%d suppress=%d", this->prefix_.c_str(), this->topic_count_, this->frequency_, this->msg_size_, this->qos_depth_, this->output_suppressed_);
 
     // create base publishers
     for ( auto idx = 0; idx < this->topic_count_; ++idx ) {
@@ -56,7 +57,7 @@ PublisherNode::PublisherNode(const std::string& node_name, const std::string& ns
         [this]() {
             auto idx = 0;
             for ( const auto& publisher: this->base_publishers_ ) {
-                std::string header = "[" + this->prefix_ + "] Hello, world! " + std::to_string(idx++) + "(" + std::to_string(this->topic_count_) + ")";
+                std::string header = "[" + this->prefix_ + "] Hello, world! " + std::to_string(idx++) + "(" + std::to_string(this->msg_counter_) + ")";
                 int dummy_size = this->msg_size_ - header.size();
                 std::vector<char> dummy_data(dummy_size, '-');
                 std::string data_str(dummy_data.begin(), dummy_data.end());
@@ -64,9 +65,10 @@ PublisherNode::PublisherNode(const std::string& node_name, const std::string& ns
                 auto message = std_msgs::msg::String();
                 message.data = data_str;
                 if (!this->output_suppressed_) {
-                    RCLCPP_INFO(this->get_logger(), "PUB: |%s| (%d : %zu)", message.data.c_str(), idx, this->topic_count_++);
+                    RCLCPP_INFO(this->get_logger(), "PUB: %s |%s| (%d : %zu)", this->prefix_.c_str(), message.data.c_str(), idx, this->msg_counter_);
                 }
                 publisher->publish(message);
+                this->msg_counter_++;
             }
         }
     );

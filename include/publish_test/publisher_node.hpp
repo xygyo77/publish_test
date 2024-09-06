@@ -18,6 +18,7 @@ private:
     double frequency_;
     int msg_size_;
     int qos_depth_;
+    int msg_counter_;
     std::string prefix_;
     bool output_suppressed_;
 };

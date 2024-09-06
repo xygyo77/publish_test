@@ -1,11 +1,11 @@
 /**:
   ros__parameters:
-    topic_count: 5
+    topic_count: 10
     frequency: 10.0
-    msg_size: 100
+    msg_size: 128
     qos_depth: 10
-    var_topic_count: 3
+    var_topic_count: 5
     var_frequency: 10.0
-    var_msg_size: 100
+    var_msg_size: 128
     var_qos_depth: 10
     output_suppressed: false

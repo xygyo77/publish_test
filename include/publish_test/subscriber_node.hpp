@@ -16,6 +16,7 @@ private:
     int topic_count_;
     int qos_depth_;
     std::string prefix_;
+    int msg_counter_;
     bool output_suppressed_;
 };
 
