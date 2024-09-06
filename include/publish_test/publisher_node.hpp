@@ -9,6 +9,9 @@ class PublisherNode : public rclcpp::Node
 public:
     explicit PublisherNode(const std::string& node_name, const std::string& ns);
 
+    std::string get_prefix() {return prefix_;}
+    int get_msg_counter() {return msg_counter_;}
+
 private:
     std::vector<rclcpp::Publisher<std_msgs::msg::String>::SharedPtr> base_publishers_;
     std::vector<rclcpp::Publisher<std_msgs::msg::String>::SharedPtr> var_publishers_;

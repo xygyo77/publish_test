@@ -1,4 +1,5 @@
 #include <rclcpp/rclcpp.hpp>
+#include <signal.h>
 #include <chrono>
 #include <random>
 #include <iostream>
@@ -6,8 +7,24 @@
 
 #include "publish_test/publisher_node.hpp"
 
+extern std::shared_ptr<PublisherNode> publisher_base_node_ptr;
+extern std::shared_ptr<PublisherNode> publisher_var_node_ptr;
 extern bool DEBUG;
 #define DB(X) {if(DEBUG) {std::cout << __func__ << ": " << __LINE__ << " " << X << std::endl;}}
+
+void signal_pub_handler(int signal) {
+    (void)signal;
+
+    RCLCPP_INFO(rclcpp::get_logger("LOG"), "\n######################: %u", gettid());
+    std::string ns = publisher_base_node_ptr->get_prefix();
+    int msg_counter = publisher_base_node_ptr->get_msg_counter()- 1;
+    RCLCPP_INFO(rclcpp::get_logger("LOG"), "=== PUB: %s ===\n  TX=%d", ns.c_str(), msg_counter);
+    ns = publisher_var_node_ptr->get_prefix();
+    msg_counter = publisher_var_node_ptr->get_msg_counter() - 1;
+    RCLCPP_INFO(rclcpp::get_logger("LOG"), "=== PUB: %s ===\n  TX=%d", ns.c_str(), msg_counter);
+    sleep(5);
+    rclcpp::shutdown();
+}
 
 PublisherNode::PublisherNode(const std::string& node_name, const std::string& ns)
 : Node(
@@ -43,6 +60,8 @@ PublisherNode::PublisherNode(const std::string& node_name, const std::string& ns
 
     RCLCPP_INFO(this->get_logger(), "\n=== PUB: %s ===\n topic_count=%d freq=%f size=%d qos=%d suppress=%d", this->prefix_.c_str(), this->topic_count_, this->frequency_, this->msg_size_, this->qos_depth_, this->output_suppressed_);
 
+    signal(SIGINT, signal_pub_handler);
+
     // create base publishers
     for ( auto idx = 0; idx < this->topic_count_; ++idx ) {
         std::string topic_name = this->prefix_ + "_topic_" + std::to_string(idx);
@@ -57,7 +76,9 @@ PublisherNode::PublisherNode(const std::string& node_name, const std::string& ns
         [this]() {
             auto idx = 0;
             for ( const auto& publisher: this->base_publishers_ ) {
-                std::string header = "[" + this->prefix_ + "] Hello, world! " + std::to_string(idx++) + "(" + std::to_string(this->msg_counter_) + ")";
+                std::stringstream ss;
+                ss << std::setw(8) << std::setfill('0') << this->msg_counter_ << "[" << this->prefix_ << "] Hello, world! " << std::to_string(idx++);
+                std::string header = ss.str();
                 int dummy_size = this->msg_size_ - header.size();
                 std::vector<char> dummy_data(dummy_size, '-');
                 std::string data_str(dummy_data.begin(), dummy_data.end());
