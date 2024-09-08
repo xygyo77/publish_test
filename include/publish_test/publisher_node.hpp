@@ -16,6 +16,7 @@ private:
     std::vector<rclcpp::Publisher<std_msgs::msg::String>::SharedPtr> publishers_;
     std::vector<rclcpp::TimerBase::SharedPtr> timers_;
 
+    std::mutex mtx_; 
     int topic_count_;
     int unit_;
     double frequency_;

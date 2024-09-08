@@ -18,10 +18,12 @@ public:
 private:
     std::vector<rclcpp::Subscription<std_msgs::msg::String>::SharedPtr> subscriptions_;
 
+    std::mutex mtx_; 
     int topic_count_;
     int qos_depth_;
     std::string prefix_;
     int msg_counter_;
+    int max_rx_serial_num_;
     int rx_ok_;
     int rx_loss_;
     int rx_error_;

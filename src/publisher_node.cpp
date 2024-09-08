@@ -1,30 +1,14 @@
 #include <rclcpp/rclcpp.hpp>
-#include <signal.h>
 #include <chrono>
 #include <random>
 #include <iostream>
+#include <mutex>
 #include <std_msgs/msg/string.hpp>
 
 #include "publish_test/publisher_node.hpp"
 
-extern std::shared_ptr<PublisherNode> publisher_base_node_ptr;
-extern std::shared_ptr<PublisherNode> publisher_var_node_ptr;
 extern bool DEBUG;
 #define DB(X) {if(DEBUG) {std::cout << __func__ << ": " << __LINE__ << " " << #X << ": " << X << std::endl;}}
-
-void signal_pub_handler(int signal) {
-    (void)signal;
-
-    RCLCPP_INFO(rclcpp::get_logger("LOG"), "\n######################: %u", gettid());
-    std::string ns = publisher_base_node_ptr->get_prefix();
-    int msg_counter = publisher_base_node_ptr->get_msg_counter()- 1;
-    RCLCPP_INFO(rclcpp::get_logger("LOG"), "=== PUB: %s ===\n  TX=%d", ns.c_str(), msg_counter);
-    ns = publisher_var_node_ptr->get_prefix();
-    msg_counter = publisher_var_node_ptr->get_msg_counter() - 1;
-    RCLCPP_INFO(rclcpp::get_logger("LOG"), "=== PUB: %s ===\n  TX=%d", ns.c_str(), msg_counter);
-    sleep(5);
-    rclcpp::shutdown();
-}
 
 PublisherNode::PublisherNode(const std::string& node_name, const std::string& ns)
 : Node(
@@ -65,8 +49,6 @@ PublisherNode::PublisherNode(const std::string& node_name, const std::string& ns
 
     RCLCPP_INFO(this->get_logger(), "\n=== PUB: %s ===\n topic_count=%d unit=%d freq=%f size=%d qos=%d suppress=%d", this->prefix_.c_str(), this->topic_count_, this->unit_, this->frequency_, this->msg_size_, this->qos_depth_, this->output_suppressed_);
 
-    signal(SIGINT, signal_pub_handler);
-
     // create base publishers
     for ( auto topic_index = 0; topic_index < this->topic_count_; ++topic_index ) {
         std::string topic_name = this->prefix_ + "_topic_" + std::to_string(topic_index);
@@ -86,6 +68,8 @@ PublisherNode::PublisherNode(const std::string& node_name, const std::string& ns
             std::chrono::microseconds(static_cast<int>(interval_us)),
             [this, timer_id]() {
                 for (auto topic_index = 0; topic_index < this->unit_ ; ++topic_index) {
+                    std::lock_guard<std::mutex> lock(this->mtx_);
+
                     DB(timer_id)
                     DB(topic_index)
                     auto publisher_index = timer_id*this->unit_ + topic_index;
@@ -98,7 +82,7 @@ PublisherNode::PublisherNode(const std::string& node_name, const std::string& ns
                     std::stringstream ss;
                     ss << std::setw(8) << std::setfill('0') << this->msg_counter_ << "[" << this->prefix_ << "] Hello, world! " << std::to_string(publisher_index);
                     std::string header = ss.str();
-                    int dummy_size = this->msg_size_ - header.size();
+                    int dummy_size = (this->msg_size_ <= header.size())? 1: this->msg_size_ - header.size();
                     std::vector<char> dummy_data(dummy_size, '-');
                     std::string data_str(dummy_data.begin(), dummy_data.end());
                     data_str.insert(0, header);
@@ -113,5 +97,6 @@ PublisherNode::PublisherNode(const std::string& node_name, const std::string& ns
             }
         );
         this->timers_.push_back(timer);
+        rclcpp::sleep_for(std::chrono::microseconds(static_cast<int>(interval_us)) / 2);
     }
 }
