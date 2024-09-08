@@ -16,8 +16,7 @@ bool DEBUG = true;
 void signal_pub_handler(int signal) {
     (void)signal;
 
-    std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
-    RCLCPP_INFO(rclcpp::get_logger("LOG"), "\n######################: %u", gettid());
+    RCLCPP_INFO(rclcpp::get_logger("LOG"), "\n================ %u", gettid());
     std::string ns = publisher_base_node_ptr->get_prefix();
     int msg_counter = publisher_base_node_ptr->get_msg_counter()- 1;
     RCLCPP_INFO(rclcpp::get_logger("LOG"), "\n=== PUB: %s ===\n  TX=%d", ns.c_str(), msg_counter);
@@ -31,22 +30,13 @@ void signal_pub_handler(int signal) {
 void signal_sub_handler(int signal) {
     (void)signal;
 
-    std::cout << "################################################################" << std::endl;
-    RCLCPP_INFO(rclcpp::get_logger("LOG"), "\n######################: %u", gettid());
+    RCLCPP_INFO(rclcpp::get_logger("LOG"), "\n++++++++++++++++ %u", gettid());
     std::string ns = subscriber_base_node_ptr->get_prefix();
-    int rx_ok = subscriber_base_node_ptr->get_rx_ok();
-    int rx_loss = subscriber_base_node_ptr->get_rx_loss();
-    int rx_error = subscriber_base_node_ptr->get_rx_error();
     int msg_counter = subscriber_base_node_ptr->get_msg_counter()- 1;
     RCLCPP_INFO(rclcpp::get_logger("LOG"), "\n=== SUB: %s ===\n  RX=%d", ns.c_str(), msg_counter);
-    //RCLCPP_INFO(rclcpp::get_logger("LOG"), "=== SUB: %s ===\n  RX_OK=%d LOSS=%d ERROR=%d msg_count=%d", ns.c_str(), rx_ok, rx_loss, rx_error, msg_counter);
     ns = subscriber_var_node_ptr->get_prefix();
-    rx_ok = subscriber_var_node_ptr->get_rx_ok();
-    rx_loss = subscriber_var_node_ptr->get_rx_loss();
-    rx_error = subscriber_var_node_ptr->get_rx_error();
     msg_counter = subscriber_var_node_ptr->get_msg_counter()- 1;
     RCLCPP_INFO(rclcpp::get_logger("LOG"), "\n=== PUB: %s ===\n  TX=%d", ns.c_str(), msg_counter);
-    //RCLCPP_INFO(rclcpp::get_logger("LOG"), "=== SUB: %s ===\n  RX_OK=%d LOSS=%d ERROR=%d msg_count=%d", ns.c_str(), rx_ok, rx_loss, rx_error, msg_counter);
     sleep(1);
     rclcpp::shutdown();
 }

@@ -23,7 +23,7 @@ PublisherNode::PublisherNode(const std::string& node_name, const std::string& ns
     prefix_("base"),
     output_suppressed_(false)
 {
-    DB("==================================================================================")
+    DB("================")
     DB(node_name)
     // command line options
     if (ns == "base") {
@@ -70,10 +70,7 @@ PublisherNode::PublisherNode(const std::string& node_name, const std::string& ns
                 for (auto topic_index = 0; topic_index < this->unit_ ; ++topic_index) {
                     std::lock_guard<std::mutex> lock(this->mtx_);
 
-                    DB(timer_id)
-                    DB(topic_index)
                     auto publisher_index = timer_id*this->unit_ + topic_index;
-                    DB(publisher_index)
                     if (publisher_index >= this->publishers_.size()) {
                         DB("!!! loop exit !!!")
                         break;
