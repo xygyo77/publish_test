@@ -36,7 +36,7 @@ void signal_sub_handler(int signal) {
     RCLCPP_INFO(rclcpp::get_logger("LOG"), "\n=== SUB: %s ===\n  RX=%d", ns.c_str(), msg_counter);
     ns = subscriber_var_node_ptr->get_prefix();
     msg_counter = subscriber_var_node_ptr->get_msg_counter()- 1;
-    RCLCPP_INFO(rclcpp::get_logger("LOG"), "\n=== PUB: %s ===\n  TX=%d", ns.c_str(), msg_counter);
+    RCLCPP_INFO(rclcpp::get_logger("LOG"), "\n=== SUB: %s ===\n  RX=%d", ns.c_str(), msg_counter);
     sleep(1);
     rclcpp::shutdown();
 }

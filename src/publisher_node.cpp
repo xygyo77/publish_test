@@ -58,8 +58,7 @@ PublisherNode::PublisherNode(const std::string& node_name, const std::string& ns
 
     double interval_us = 1000.0 / this->frequency_ * 1000;
     RCLCPP_INFO(this->get_logger(), "interval_us=%f", interval_us);
-    int timer_count = this->topic_count_/this->unit_;
-    timer_count += (this->topic_count_%this->unit_)? 1: 0;
+    int timer_count = (this->topic_count_ + this->unit_ - 1) / this->unit_;
     DB(timer_count)
     for (auto timer_id = 0; timer_id < timer_count; ++timer_id) {
         DB((this->topic_count_ /this->unit_))
